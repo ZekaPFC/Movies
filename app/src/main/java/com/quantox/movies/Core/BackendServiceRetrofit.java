@@ -1,5 +1,8 @@
 package com.quantox.movies.Core;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -42,9 +45,11 @@ public class BackendServiceRetrofit {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
 
+        Gson gson = new GsonBuilder().setLenient().create();
+
         INSTANCE = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(okHttpClient)
                 .build();
     }

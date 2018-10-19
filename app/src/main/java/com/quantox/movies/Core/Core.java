@@ -22,18 +22,18 @@ public class Core implements ICore {
     private IBackendService backendService = IBackendService.BackedServiceBuilder.build();
     private static Core INSTANCE;
 
-    private Core(IContextProvider contextProvider){
+    private Core(IContextProvider contextProvider) {
         this.contextProvider = contextProvider;
     }
 
     @Override
-    public void getTopRatedMovies(int page,IDataCallback<ApiResponse<List<Movie>>> dataCallback) {
+    public void getTopRatedMovies(int page, IDataCallback<ApiResponse<List<Movie>>> dataCallback) {
         backendService.getTopRatedMovies(page).enqueue(new Callback<ApiResponse<List<Movie>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<Movie>>> call, Response<ApiResponse<List<Movie>>> response) {
-                if (response.body() != null){
+                if (response.isSuccessful() && response.body() != null) {
                     dataCallback.onData(response.body());
-                } else if (response.errorBody() != null){
+                } else if (response.errorBody() != null) {
                     dataCallback.onFailure(ApiErrorResponse.parseErrorResponse(response));
                 }
             }
@@ -46,13 +46,13 @@ public class Core implements ICore {
     }
 
     @Override
-    public void getUpcomingMovies(int page,IDataCallback<ApiResponse<List<Movie>>> dataCallback) {
+    public void getUpcomingMovies(int page, IDataCallback<ApiResponse<List<Movie>>> dataCallback) {
         backendService.getUpcomingMovies(page).enqueue(new Callback<ApiResponse<List<Movie>>>() {
             @Override
             public void onResponse(Call<ApiResponse<List<Movie>>> call, Response<ApiResponse<List<Movie>>> response) {
-                if (response.body() != null){
+                if (response.body() != null) {
                     dataCallback.onData(response.body());
-                } else if (response.errorBody() != null){
+                } else if (response.errorBody() != null) {
                     dataCallback.onFailure(ApiErrorResponse.parseErrorResponse(response));
                 }
             }
@@ -65,18 +65,18 @@ public class Core implements ICore {
 
     }
 
-    @Override
-    public Core getInstance() {
+
+    public static Core getInstance() {
         return INSTANCE;
     }
 
-    public static  void init(IContextProvider contextProvider) {
-        if (INSTANCE == null){
+    public static void init(IContextProvider contextProvider) {
+        if (INSTANCE == null) {
             INSTANCE = new Core(contextProvider);
         }
     }
 
-    private Context getContext(){
+    private Context getContext() {
         return contextProvider.getContext();
     }
 }

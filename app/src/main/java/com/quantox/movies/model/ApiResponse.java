@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class ApiResponse<T> {
 
     private int page;
+    @SerializedName("results")
     private T data;
     @SerializedName("total_results")
     private int totalResults;

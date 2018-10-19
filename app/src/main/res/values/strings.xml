@@ -2,4 +2,6 @@
     <string name="app_name">Movies</string>
 
     <string name="generic_network_error">Error during loading, check connection!</string>
+    <string name="top_rated_movies">Top rated movies</string>
+    <string name="upcoming_movies">Upcoming movies</string>
 </resources>

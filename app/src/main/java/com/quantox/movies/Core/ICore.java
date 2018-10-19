@@ -16,7 +16,7 @@ public interface ICore {
 
     void getUpcomingMovies(int page,IDataCallback<ApiResponse<List<Movie>>> dataCallback);
 
-    Core getInstance();
+
 
 
 
