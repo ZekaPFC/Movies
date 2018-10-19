@@ -1,17 +1,24 @@
 package com.quantox.movies.Core;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
+import com.quantox.movies.R;
+import com.quantox.movies.model.ApiErrorResponse;
+import com.quantox.movies.model.ApiResponse;
 import com.quantox.movies.model.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class Core implements ICore {
 
     private IContextProvider contextProvider;
-    private List<Movie> topRatedMovies = new ArrayList<>();
-    private List<Movie> upcomingMovies = new ArrayList<>();
+
     private IBackendService backendService = IBackendService.BackedServiceBuilder.build();
     private static Core INSTANCE;
 
@@ -20,28 +27,41 @@ public class Core implements ICore {
     }
 
     @Override
-    public void getTopRatedMovies(IDataCallback<List<Movie>> dataCallback) {
-        if (topRatedMovies.isEmpty()){
-            //TODO get data from network
-        } else {
-            dataCallback.onData(topRatedMovies);
-        }
+    public void getTopRatedMovies(int page,IDataCallback<ApiResponse<List<Movie>>> dataCallback) {
+        backendService.getTopRatedMovies(page).enqueue(new Callback<ApiResponse<List<Movie>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Movie>>> call, Response<ApiResponse<List<Movie>>> response) {
+                if (response.body() != null){
+                    dataCallback.onData(response.body());
+                } else if (response.errorBody() != null){
+                    dataCallback.onFailure(ApiErrorResponse.parseErrorResponse(response));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Movie>>> call, Throwable t) {
+                dataCallback.onFailure(getContext().getString(R.string.generic_network_error));
+            }
+        });
     }
 
     @Override
-    public void getUpcomingMovies(IDataCallback<List<Movie>> dataCallback) {
-        if (upcomingMovies.isEmpty()){
-           //TODO get data from network
-        } else {
-            dataCallback.onData(upcomingMovies);
-        }
+    public void getUpcomingMovies(int page,IDataCallback<ApiResponse<List<Movie>>> dataCallback) {
+        backendService.getUpcomingMovies(page).enqueue(new Callback<ApiResponse<List<Movie>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Movie>>> call, Response<ApiResponse<List<Movie>>> response) {
+                if (response.body() != null){
+                    dataCallback.onData(response.body());
+                } else if (response.errorBody() != null){
+                    dataCallback.onFailure(ApiErrorResponse.parseErrorResponse(response));
+                }
+            }
 
-    }
-
-    @Override
-    public void clearData() {
-        topRatedMovies.clear();
-        upcomingMovies.clear();
+            @Override
+            public void onFailure(Call<ApiResponse<List<Movie>>> call, Throwable t) {
+                dataCallback.onFailure(getContext().getString(R.string.generic_network_error));
+            }
+        });
 
     }
 

@@ -1,6 +1,7 @@
 package com.quantox.movies.Core;
 
 
+import com.quantox.movies.model.ApiResponse;
 import com.quantox.movies.model.Movie;
 
 import java.util.List;
@@ -11,11 +12,9 @@ import java.util.List;
 public interface ICore {
 
 
-    void getTopRatedMovies (IDataCallback<List<Movie>> dataCallback);
+    void getTopRatedMovies (int page,IDataCallback<ApiResponse<List<Movie>>> dataCallback);
 
-    void getUpcomingMovies(IDataCallback<List<Movie>> dataCallback);
-
-    void clearData();
+    void getUpcomingMovies(int page,IDataCallback<ApiResponse<List<Movie>>> dataCallback);
 
     Core getInstance();
 

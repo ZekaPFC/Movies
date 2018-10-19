@@ -16,7 +16,9 @@ public class BackendServiceRetrofit {
     private static final String BASE_URL = "https://developers.themoviedb.org/3/";
     private static final String API_KEY = "c22d755514350d9836b3f9b173b3d763";
 
-    public static Retrofit obtain(){
+    private static Retrofit INSTANCE;
+
+    private static void obtain() {
 
         Interceptor interceptor = chain -> {
 
@@ -37,13 +39,22 @@ public class BackendServiceRetrofit {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(interceptor)
                 .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30,TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
 
-        return new Retrofit.Builder()
+        INSTANCE = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();
     }
+
+    public static Retrofit getInstance(){
+        if (INSTANCE == null){
+            obtain();
+        }
+        return INSTANCE;
+    }
+
+
 }
